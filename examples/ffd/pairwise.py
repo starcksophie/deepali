@@ -10,7 +10,7 @@ from torch.nn import Module
 
 from deepali.core import Axes, Device, Grid, PathStr
 from deepali.core import functional as U
-from deepali.core import join_kwargs_in_sequence
+from deepali.core.config import join_kwargs_in_sequence
 from deepali.data import FlowField, Image
 from deepali.losses import RegistrationResult, new_loss
 from deepali.spatial import DisplacementFieldTransform
@@ -283,17 +283,17 @@ def read_images(
     if "img" in names:
         temp = Image.read(img_path, dtype=dtype, device=device)
         data = append_data(data, channels, "img", temp.tensor())
-    if "seg" in names:
-        if seg_path is None:
-            raise ValueError("Missing segmentation label image file path")
-        temp = Image.read(seg_path, dtype=torch.int64, device=device)
-        temp_grid = temp.grid()
-        num_classes = int(temp.max()) + 1
-        temp = temp.tensor().unsqueeze(0)
-        temp = U.as_one_hot_tensor(temp, num_classes).to(dtype=dtype)
-        temp = temp.squeeze(0)
-        temp = Image(temp, grid=temp_grid).sample(grid)
-        data = append_data(data, channels, "seg", temp.tensor())
+    # if "seg" in names:
+    #     if seg_path is None:
+    #         raise ValueError("Missing segmentation label image file path")
+    #     temp = Image.read(seg_path, dtype=torch.int64, device=device)
+    #     temp_grid = temp.grid()
+    #     num_classes = int(temp.max()) + 1
+    #     temp = temp.tensor().unsqueeze(0)
+    #     temp = U.as_one_hot_tensor(temp, num_classes).to(dtype=dtype)
+    #     temp = temp.squeeze(0)
+    #     temp = Image(temp, grid=temp_grid).sample(grid)
+    #     data = append_data(data, channels, "seg", temp.tensor())
     if "sdf" in names:
         if sdf_path is None:
             raise ValueError("Missing segmentation boundary signed distance field file path")
